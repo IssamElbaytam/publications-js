@@ -8,6 +8,9 @@ import NewDocumentModal from 'components/documents/documents.new.modal'
 import UserAccountModal from 'components/user/user.account.modal'
 import InputText from 'components/ui/input.text'
 
+import { DocumentsSidebar } from 'components/documents/documents.sidebar'
+import { DocumentsPane } from 'components/documents/documents.pane'
+
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as UserActions from 'actions/user'
@@ -43,9 +46,12 @@ export class Documents extends Component {
   }
 
   @autobind
-  updateSelectedDocument(sender, event) {
-    if (!!event) event.preventDefault()
-    this.setState({selectedDocument: sender})
+  selectDocument(selectedDocument, event) {
+    if (!!event) {
+      event.stopPropagation()
+    }
+
+    this.setState({ selectedDocument })
   }
 
   @autobind
@@ -109,69 +115,23 @@ export class Documents extends Component {
 
   render() {
     const { documents, children } = this.props
+    const { selectedDocument: doc } = this.state
 
     if (children) {
       return <div>{ children }</div>
-
-    } else {
-      const documentItems = documents
-         .filter(doc => {
-           if (!this.state.searchKeyword.length) {
-             return true
-           } else {
-             const searchKeyword = this.state.searchKeyword.toLowerCase()
-             return doc.name.toLowerCase().includes(searchKeyword)
-           }
-         })
-         .sort((lhs, rhs) => rhs.lastModified - lhs.lastModified)
-         .map(doc => {
-           return <DocumentItem
-             key={doc.id}
-             doc={doc}
-             editDocument={this.editDocument}
-             selectedDocument={this.state.selectedDocument}
-             updateSelectedDocument={this.updateSelectedDocument} />
-         })
-
-      return <div>
-        <UserAccountModal
-          userId={this.props.userId}
-          userName={this.props.userName}
-          updateUser={this.props.updateUser}
-          errors={this.props.errors}
-          removeError={this.props.removeError}
-          isTemporaryUser={this.props.isTemporaryUser}
-          toggleModal={this.toggleUserAccountModal}
-          isOpen={this.state.isUserAccountModalOpen} />
-        <NewDocumentModal
-          createNewDocument={this.createNewDocument}
-          toggleNewDocumentModal={this.toggleNewDocumentModal}
-          isOpen={this.state.isNewDocModalOpen} />
-        <DocumentsNavbar
-          isTemporaryUser={this.props.isTemporaryUser}
-          isAuthenticated={this.props.isAuthenticated}
-          documentIsSelected={this.state.selectedDocument !== null}
-          editDocument={this.editDocument}
-          deleteDocument={this.deleteDocument}
-          createNewDocument={this.toggleNewDocumentModal}
-          searchKeyword={this.state.searchKeyword}
-          searchKeywordChanged={this.searchKeywordChanged}
-          logOut={this.logOut}
-          toggleUserAccountModal={this.toggleUserAccountModal} />
-        <div className="app-content">
-          <ul className="document-items" onClick={() => this.updateSelectedDocument(null, event)}>
-            <ReactCSSTransitionGroup
-            transitionName="document-item-animation"
-            transitionAppear={true}
-            transitionAppearTimeout={0}
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}>
-              {documentItems}
-            </ReactCSSTransitionGroup>
-          </ul>
-          </div>
-        </div>
     }
+
+    const documentsPane = doc ? <DocumentsPane
+      doc={ this.state.selectedDocument }
+      editDocument={ this.editDocument } /> : undefined
+
+    return <div className="app-content document">
+      <DocumentsSidebar
+        documents={ documents }
+        selectedDocument={ doc }
+        selectDocument={ this.selectDocument } />
+      { documentsPane }
+    </div>
   }
 }
 

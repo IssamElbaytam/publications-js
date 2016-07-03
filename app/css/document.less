@@ -1,3 +1,94 @@
+.document-sidebar {
+  height: inherit;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  width: 20%;
+  overflow: hidden;
+  padding: 2% 0 0 0;
+
+  display: -webkit-flex;
+  display: flex;
+
+  .sidebar-content {
+    border-right: 1px solid #ccc;
+    height: 100%;
+  }
+
+  -webkit-flex-direction: column;
+  flex-direction: column;
+
+  h1 {
+    color: #777;
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 0 0 0 15px;
+    text-transform: uppercase;
+  }
+
+  .documents-list {
+    flex: 1 0 auto;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+
+    li {
+      padding: 5px 0;
+      margin: 10px 0;
+      cursor: default;
+
+      .content {
+        color: #777;
+        padding: 0 15px;
+
+        .title {
+          font-size: 1.1em;
+        }
+
+        .description {
+          font-size: 0.8em;
+          font-weight: 500;
+        }
+      }
+
+      &.selected {
+        .content {
+          .title {
+            font-weight: 600;
+          }
+
+          color: #444;
+        }
+      }
+    }
+  }
+}
+
+.documents-pane {
+  height: inherit;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  width: 77%;
+  padding: 2% 0 0 0;
+  overflow: scroll;
+
+  h1 {
+    font-size: 1.5em;
+    font-weight: 300;
+  }
+
+  .preview-pane {
+    height: auto;
+    overflow: scroll;
+    padding: 0 1em 1em 0;
+
+    .canvas-container svg {
+    }
+  }
+}
+
 ul.document-items {
   margin: 0 auto;
   padding: 60px 0 20px;
